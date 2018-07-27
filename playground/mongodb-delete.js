@@ -29,9 +29,15 @@ MongoClient.connect(url, { useNewUrlParser: true }, (err, client)=>{
   // });
 
   //findOneAndDelete
-  db.collection('Todos').findOneAndDelete({completed: false}).then((result)=>{
+  // db.collection('Todos').findOneAndDelete({completed: false}).then((result)=>{
+  //   console.log(result);
+  // });
+  // 5b5a71e38a9bd81a3a289b06
+
+  db.collection('Todos').deleteMany({name: 'Victor'}).then((result)=>{
     console.log(result);
   });
+
 
   client.close();
 });
