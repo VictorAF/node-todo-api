@@ -53,6 +53,26 @@ UserSchema.methods.toJSON = function() {
   return _.pick(userObject, ['_id', 'email']);
 };
 
+UserSchema.statics.findByToken = function(token){
+  var User = this;
+  var decoded;
+
+  try{
+    decoded = jwt.verify(token, 'abc123');
+  }catch (e){
+    // return new Promise((resolve, reject) => {
+    //   reject(); // This Promise will be returned from find by token (ct server)
+    // });
+    return Promise.reject('test');
+  }
+
+  return User.findOne({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 // USER
 // email - require it - trim it - set type - set min lenght of 1
 var User = mongoose.model('User', UserSchema);
