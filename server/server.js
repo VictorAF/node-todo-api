@@ -128,12 +128,31 @@ app.post('/users', (req, res) => {
   });
 });
 
-app.listen(port, ()=> {
+app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });
 
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
+});
+
+// POST /users/login {email, password}
+// We are not using authenticate, because you don't have a token, you want one
+app.post('/users/login', (req, res) =>{
+  var user_body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(user_body.email, user_body.password).then((user)=>{
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e)=>{
+    res.status(400).send();
+  })
+  // User.findByCredentials(user_body.email, user_body.password).then((user) => {
+  //   res.send(user);
+  // }).catch((e) => {
+  //   res.status(400).send();
+  // });
 });
 
 module.exports = {app};
